@@ -1,6 +1,6 @@
 package autoproxy.annotation
 
-import annotation.target.field
+import scala.annotation.target.field
 
 /*                     __                                               *\
 **     ________ ___   / /  ___     Scala API                            **

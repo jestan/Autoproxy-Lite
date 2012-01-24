@@ -1,6 +1,6 @@
 package autoproxy.plugin
 
-import org.specs.Specification
+import org.specs2.mutable.Specification
 import tools.nsc.{CompilerCommand, Settings, Global}
 import tools.nsc.reporters.ConsoleReporter
 import tools.nsc.util.ClassPath
@@ -64,7 +64,7 @@ class PluginSpec extends Specification {
 
 //          reporter.infos must haveSize(0)
       }
-
+      success
     }
   }
 }

@@ -41,26 +41,8 @@ object Resolvers {
   val allResolvers = Seq(scalaToolsSnapshots)
 }
 
-//TODO: factor out dependencies into this class
-/*
-class Dependencies(scalaVersion: SettingKey[String]) {
-  val logbackVer = "0.9.25"
-  val specsVer = "1.6.8-SNAPSHOT"
-
-  val scalacompiler = "org.scala-lang" % "scala-compiler" % scalaVersion
-  val scalalib = "org.scala-lang" % "scala-library" % scalaVersion
-
-  val logbackcore    = "ch.qos.logback" % "logback-core"     % logbackVer
-  val logbackclassic = "ch.qos.logback" % "logback-classic"  % logbackVer
-
-  val specs = "org.scala-tools.testing" %% "specs" % "1.6.8-SNAPSHOT"
-}
-*/
-
 object PluginBuild extends Build {
   import Resolvers._
-//  val deps = new Dependencies(scalaVersion)
-//  import deps*._
   import BuildSettings._
 
   lazy val root = Project(
@@ -82,9 +64,9 @@ object PluginBuild extends Build {
       libraryDependencies <++= scalaVersion { sv => Seq(
         "org.scala-lang" % "scala-compiler" % sv,
         "org.scala-lang" % "scala-library" % sv,
-        "junit" % "junit" % "4.8.2" % "test",
-        "org.scala-tools.testing" %% "specs" % "1.6.9-SNAPSHOT",
-        "ch.qos.logback" % "logback-classic" % "0.9.25"
+        "ch.qos.logback" % "logback-classic" % "0.9.26",
+        "junit" % "junit" % "4.8.2" % "test->default",
+        "org.specs2" %% "specs2" % "1.7.1" % "test->default"
       )}
     )
   ) dependsOn (annotation)
@@ -99,9 +81,8 @@ object PluginBuild extends Build {
     file("examples/simple"),
     settings = buildSettings ++ Seq(
       resolvers := allResolvers,
-      libraryDependencies += "org.scala-tools.testing" %% "specs" % "1.6.9-SNAPSHOT",
-      scalacOptions <+=
-        (packagedArtifact in Compile in plugin in packageBin) map
+      libraryDependencies += "org.specs2" %% "specs2" % "1.7.1" % "test->default",
+      scalacOptions <+= (packagedArtifact in Compile in plugin in packageBin) map
         (jar => "-Xplugin:%s" format jar._2.getAbsolutePath),
       scalacOptions += "-Xplugin-require:autoproxy"
 //        "-verbose",

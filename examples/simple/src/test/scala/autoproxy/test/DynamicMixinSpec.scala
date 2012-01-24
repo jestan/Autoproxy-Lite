@@ -1,11 +1,6 @@
 package autoproxy.test
 
-
-import org.specs.Specification
-import tools.nsc.{CompilerCommand, Settings, Global}
-import tools.nsc.reporters.ConsoleReporter
-import tools.nsc.util.ClassPath
-import java.io.File
+import org.specs2.mutable.Specification
 
 class DynamicMixinSpec extends Specification {
   "The dynamic mixin" should {
