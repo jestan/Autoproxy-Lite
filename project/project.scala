@@ -10,7 +10,17 @@ object BuildSettings {
     organization := buildOrganization,
     version      := buildVersion,
     scalaVersion := buildScalaVersion,
-    shellPrompt  := ShellPrompt.buildShellPrompt
+    shellPrompt  := ShellPrompt.buildShellPrompt,
+    publishMavenStyle := true,
+    publishTo <<= (version) {
+      version: String =>
+        val repo = "http://192.168.0.7:8080/archiva/repository/"
+        if (version.trim.endsWith("SNAPSHOT"))
+          Some("Repository Archiva Managed snapshots Repository" at repo + "snapshots/")
+        else
+          Some("Repository Archiva Managed internal Repository" at repo + "internal/")
+    },
+    credentials += Credentials("Repository Archiva Managed internal Repository", "192.168.0.7", "xxxx", "xxxx")
   )
 }
 
@@ -47,7 +57,8 @@ object PluginBuild extends Build {
 
   lazy val root = Project(
     id = "autoproxy-lite",
-    base = file(".")
+    base = file("."),
+    settings = buildSettings
   ) aggregate(annotation, plugin, examples)
 
   lazy val annotation = Project(
@@ -73,7 +84,8 @@ object PluginBuild extends Build {
 
   lazy val examples = Project(
     id = "examples",
-    base = file("examples")
+    base = file("examples"),
+    settings = buildSettings
   ) aggregate(simpleExamples)
   
   lazy val simpleExamples = Project(
@@ -103,17 +115,5 @@ object PluginBuild extends Build {
 //        "-Xshow-phases"        
     )
   ) dependsOn(annotation, plugin)
+
 }
-
-
-//TODO: Rewrite to use SBT 0.10 publishing
-
-  ///////////////
-  // Publishing
-  
-//  override def managedStyle = ManagedStyle.Maven
-//  val publishTo = "Scala Tools Nexus" at "http://nexus.scala-tools.org/content/repositories/snapshots/"
-//  Credentials(Path.userHome / ".ivy2" / ".credentials", log)
-//  override def publishAction = super.publishAction && publishCurrentNotes
-//  override def extraTags = "scalaj" :: super.extraTags
-
