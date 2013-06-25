@@ -105,7 +105,7 @@ class GenerateSynthetics(plugin: AutoProxyPlugin, val global: Global) extends Pl
       val inheritedMethods = definedMethods.filter(_.owner != cls)
       val localMethods = definedMethods.filter(_.owner == cls)
       val localMethodAncestors = localMethods.flatMap(_.allOverriddenSymbols)
-      val localExclusions = (localMethods ++ localMethodAncestors).distinct
+      val localExclusions = (localMethods ++ localMethodAncestors).toList.distinct
       log("local exclusions: " + localExclusions.mkString(", "))
 
       //determine all methods that should be excluded from consideration for proxying
@@ -130,7 +130,7 @@ class GenerateSynthetics(plugin: AutoProxyPlugin, val global: Global) extends Pl
 
       val synthetics = requiredMethods map { mkDelegate(cls, symbolToProxy, _, symbolToProxy.pos.focus) }
 
-      synthetics
+      synthetics.toList
     }
 
     override def transform(tree: Tree): Tree = {

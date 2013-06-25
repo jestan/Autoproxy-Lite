@@ -3,8 +3,8 @@ import Keys._
 
 object BuildSettings {
   val buildOrganization = "org.scala.incubator"
-  val buildVersion      = "2.9.1"
-  val buildScalaVersion = "2.9.1"
+  val buildVersion      = "2.10.0"
+  val buildScalaVersion = "2.10.0"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization := buildOrganization,
@@ -20,7 +20,7 @@ object BuildSettings {
         else
           Some("Repository Archiva Managed internal Repository" at repo + "internal/")
     },
-    credentials += Credentials("Repository Archiva Managed internal Repository", "192.168.0.7", "xxxx", "xxxx")
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials-release")
   )
 }
 
@@ -77,7 +77,7 @@ object PluginBuild extends Build {
         "org.scala-lang" % "scala-library" % sv,
         "ch.qos.logback" % "logback-classic" % "0.9.26",
         "junit" % "junit" % "4.8.2" % "test->default",
-        "org.specs2" %% "specs2" % "1.7.1" % "test->default"
+        "org.specs2" %% "specs2" % "1.13" % "test->default"
       )}
     )
   ) dependsOn (annotation)
@@ -93,7 +93,7 @@ object PluginBuild extends Build {
     file("examples/simple"),
     settings = buildSettings ++ Seq(
       resolvers := allResolvers,
-      libraryDependencies += "org.specs2" %% "specs2" % "1.7.1" % "test->default",
+      libraryDependencies += "org.specs2" %% "specs2" % "1.13" % "test->default",
       scalacOptions <+= (packagedArtifact in Compile in plugin in packageBin) map
         (jar => "-Xplugin:%s" format jar._2.getAbsolutePath),
       scalacOptions += "-Xplugin-require:autoproxy"
